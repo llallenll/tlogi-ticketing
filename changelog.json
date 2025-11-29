@@ -1,0 +1,12 @@
+{
+  "latest": "1.0.1",
+  "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2025-11-27",
+      "changes": [
+        "Updated Ability to enable / disable domain"
+      ]
+    }
+  ]
+}
