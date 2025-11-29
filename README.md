@@ -122,8 +122,17 @@ EXIT;
 
 ## 🚀 6. Start the Bot + Dashboard
 
+Start Service:
 ```bash
 npm run dev:all
+```
+
+Add OAuth2 Redirects:
+```bash
+Visit: https://discord.com/developers
+Navigate to OAuth2 -> Redirects
+In your Command line you will see "Callback running on https://[Domain or IP]/auth/discord/callback"
+Paste the url in Redirects
 ```
 
 ## 🌐 7. Open the Dashboard
