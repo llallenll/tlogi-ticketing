@@ -15,7 +15,7 @@ dotenv.config();
 const BOT_BASE_URL = process.env.BOT_URL;
 const CURRENT_VERSION = process.env.TLOGI_VERSION || "1.0.0";
 const UPDATE_FEED_URL =
-  process.env.TLOGI_UPDATE_FEED || "https://tlogi.xyz/tlogi-updates.json";
+  process.env.TLOGI_UPDATE_FEED || "https://raw.githubusercontent.com/llallenll/tlogi-ticketing/refs/heads/main/changelog.json";
 
 const USE_DOMAIN =
   String(process.env.USE_DOMAIN || "true").toLowerCase() === "true";
