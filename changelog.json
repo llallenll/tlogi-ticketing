@@ -5,7 +5,8 @@
       "version": "1.0.1",
       "date": "2025-11-27",
       "changes": [
-        "Updated Ability to enable / disable domain"
+        "Updated Ability to enable / disable domain",
+        "Bot now Deletes channel after closing in Dashboard"
       ]
     }
   ]

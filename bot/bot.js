@@ -19,6 +19,17 @@ import {
   MessageFlags,
 } from "discord.js";
 
+// ---------------- DOMAIN CHECK----------------
+
+const useDomain =
+  String(process.env.USE_DOMAIN || "true").toLowerCase() === "true";
+
+const FRONTEND_BASE = useDomain
+  ? process.env.FRONTEND_DOMAIN || "http://localhost:5173"
+  : `http://${process.env.HOST || "localhost"}:${
+      process.env.FRONTEND_PORT || 5173
+    }`;
+
 // ---------------- DB SETUP ----------------
 const db = mysql.createPool({
   host: process.env.DB_HOST,
@@ -245,7 +256,7 @@ async function sendTranscriptDMFromBot(ticketId) {
       ]);
     }
 
-    const publicViewUrl = `http://localhost:5173/view/${publicToken}`;
+    const publicViewUrl = `${FRONTEND_BASE}/view/${publicToken}`;
 
     // 3) Fetch user
     const user = await client.users.fetch(discordUserId).catch((e) => {
@@ -611,6 +622,54 @@ api.post("/ticket-transcript", async (req, res) => {
     console.error("/ticket-transcript error:", err);
     return res.status(500).json({
       error: "Failed to send ticket transcript DM",
+      details: err.message,
+    });
+  }
+});
+
+// Dashboard -> Bot: delete the Discord channel for a ticket
+api.post("/ticket-delete-channel", async (req, res) => {
+  const { ticketId } = req.body;
+
+  if (!ticketId) {
+    return res.status(400).json({ error: "ticketId required" });
+  }
+
+  try {
+    // Lookup ticket's channel
+    const [ticket] = await query(
+      "SELECT discord_channel_id FROM tickets WHERE id = ?",
+      [ticketId]
+    );
+
+    if (!ticket || !ticket.discord_channel_id) {
+      return res
+        .status(404)
+        .json({ error: "Ticket has no associated Discord channel" });
+    }
+
+    const channelId = ticket.discord_channel_id.toString();
+
+    const channel = await client.channels.fetch(channelId).catch(() => null);
+
+    if (!channel) {
+      console.warn(
+        `Channel ${channelId} not found when trying to delete for ticket ${ticketId}`
+      );
+      return res.json({ success: true, warning: "Channel not found" });
+    }
+
+    await channel.send(
+      "🔒 This ticket has been closed from the dashboard. This channel will now be deleted."
+    );
+
+    await channel.delete("Ticket closed via dashboard");
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("Bot /ticket-delete-channel error:", err);
+    return res.status(500).json({
+      error: "Failed to delete ticket channel",
       details: err.message,
     });
   }

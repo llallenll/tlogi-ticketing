@@ -15,7 +15,7 @@ dotenv.config();
 const BOT_BASE_URL = process.env.BOT_URL;
 const CURRENT_VERSION = process.env.TLOGI_VERSION || "1.0.0";
 const UPDATE_FEED_URL =
-  process.env.TLOGI_UPDATE_FEED || "https://tlogi.xyz/tlogi-updates.json";
+  process.env.TLOGI_UPDATE_FEED || "https://raw.githubusercontent.com/llallenll/tlogi-ticketing/refs/heads/main/changelog.json";
 
 const USE_DOMAIN =
   String(process.env.USE_DOMAIN || "true").toLowerCase() === "true";
@@ -716,7 +716,7 @@ app.post("/tickets/:id/close", ensureStaff, async (req, res) => {
 
     const publicViewUrl = `${FRONTEND_ORIGIN}/view/${publicToken}`;
 
-    // Notify Discord bot
+    // Notify Discord bot (DM transcript)
     if (BOT_BASE_URL) {
       try {
         await fetch(`${BOT_BASE_URL}/ticket-transcript`, {
@@ -735,6 +735,24 @@ app.post("/tickets/:id/close", ensureStaff, async (req, res) => {
         ]);
       } catch (botErr) {
         console.error("Failed to notify Discord bot with transcript:", botErr);
+      }
+    }
+
+    // 🔴 Ttell bot to delete the Discord channel
+    if (BOT_BASE_URL) {
+      try {
+        await fetch(`${BOT_BASE_URL}/ticket-delete-channel`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ticketId: Number(ticketId),
+          }),
+        });
+      } catch (botErr) {
+        console.error(
+          "Failed to ask bot to delete ticket channel:",
+          botErr
+        );
       }
     }
 
