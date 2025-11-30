@@ -7,8 +7,8 @@ This guide walks you through installation, setup, and running everything.
 ## 📥 1. Download the Bot
 
 ```bash
-git clone https://github.com/llallenll/TLOGI_TICKET_DASHBOARD
-cd TLOGI_TICKET_DASHBOARD
+git clone https://github.com/llallenll/tlogi-ticketing
+cd tlogi-ticketing
 ```
 
 ## 📦 2. Install Dependencies
