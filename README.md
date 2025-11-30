@@ -143,3 +143,7 @@ http://localhost:5173
 
 ## ✅ All Set!
 Your bot + dashboard should now be fully running.
+
+## 📄 License
+This project is licensed under the MIT License.
+See the LICENSE file for full details.
